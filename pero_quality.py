@@ -70,7 +70,9 @@ def main():
 
             for crop, score in heatmap_scores.items():
                 l, t, r, b = crop
-                heatmap[t:b + 1, l:r + 1] = score
+
+                # interpolate <0,1> between 0-255
+                heatmap[t:b + 1, l:r + 1] = score * 255
 
         if args.output is not None:
             # directory path given

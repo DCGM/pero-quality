@@ -5,9 +5,8 @@ import numpy as np
 
 from argparse import ArgumentParser, Namespace
 from os import listdir
-from os.path import isdir, isfile, join, dirname, realpath
+from os.path import isdir, isfile, join, dirname, realpath, basename
 from sys import path, stderr
-from typing import Dict, Tuple
 
 dir_path = realpath(dirname(__file__))
 path.append(join(dir_path, "pero"))
@@ -29,15 +28,43 @@ def get_args() -> Namespace:
     return args
 
 
-def draw_heatmap(image: np.ndarray, heatmap_scores: Dict[Tuple, float]) -> np.ndarray:
-    heatmap = image.copy()
+def create_colour_lut():
+    """ Lookup table for effective converting of scores to colors for heatmap
 
-    for crop, score in heatmap_scores.items():
-        l, t, r, b = crop
-        heatmap[t:b + 1, l:r + 1] = confidence_to_rgb(score)
+    :return: numpy array with shape (256, 3)
+    """
+    lut = [_ for _ in range(256)]
+
+    for i in range(256):
+        if i / 255 < 0.1:
+            # too low scores mean no detection
+            lut[i] = (255, 255, 255)
+        else:
+            lut[i] = confidence_to_rgb(i / 255)
+
+    return np.array(lut)
+
+
+def draw_heatmap(image: np.ndarray, heatmap_scores: np.ndarray, colour_lut: np.ndarray) -> np.ndarray:
+    """ Draw colored heatmap on image showing text quality.
+
+    :param image: image which is processed
+    :param heatmap_scores: score for every pixel
+    :param colour_lut: lookup table for effective mapping scores to colors
+    :return: heatmap
+    """
+
+    # change values to <0, 255> interval
+    heatmap = (heatmap_scores * 255).astype(np.int)
+
+    colors = np.full_like(image, 255)
+
+    # compute color for every channel using lookup table
+    for channel in range(3):
+        colors[:, :, channel] = colour_lut[:, channel][heatmap[:, :]]
 
     alpha = 0.5
-    return cv2.addWeighted(heatmap, alpha, image, 1 - alpha, 0, image)
+    return cv2.addWeighted(colors, alpha, image, 1 - alpha, 0, image)
 
 
 def main():
@@ -45,14 +72,17 @@ def main():
 
     if isdir(args.input):
         files = [join(args.input, file) for file in listdir(args.input)]
-    else:
+    elif isfile(args.input):
         files = [args.input]
+    else:
+        raise FileNotFoundError("Input file not found.")
 
     evaluator = QualityEvaluator(args.config)
+    colour_lut = create_colour_lut()
 
     for file in files:
-        filename = file.split("/")[-1]
-        image = cv2.imread(file)
+        filename = basename(file)
+        image = cv2.imread(file, cv2.IMREAD_COLOR)
 
         if image is None:
             print(f"File {filename} can't be read.", file=stderr)
@@ -63,16 +93,9 @@ def main():
 
         if args.visual_heatmap:
             # draw colored heatmap
-            heatmap = draw_heatmap(image, heatmap_scores)
+            heatmap = draw_heatmap(image, heatmap_scores, colour_lut)
         else:
-            # map scores to crops
-            heatmap = np.zeros_like(image)
-
-            for crop, score in heatmap_scores.items():
-                l, t, r, b = crop
-
-                # interpolate <0,1> between 0-255
-                heatmap[t:b + 1, l:r + 1] = score * 255
+            heatmap = heatmap_scores * 255
 
         if args.output is not None:
             # directory path given

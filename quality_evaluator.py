@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
+import cv2
 import numpy as np
 import os
-from sys import stderr
-from typing import Dict
 
 from configparser import ConfigParser
 from os.path import isfile, isabs, dirname, join, realpath
+from sys import stderr
+from typing import Dict
+
 
 try:
     from heatmap import locate_confidences, load_encoding, compute_heatmap
@@ -31,7 +33,6 @@ class QualityEvaluator:
         self.config.optionxform = str
         self.config.read(config_path)
 
-        # TODO: change relative paths (if they are) to absolute paths
         for section, key in [['LINE_PARSER', 'MODEL_PATH'], ['OCR', 'OCR_JSON']]:
             if not isabs(self.config[section][key]):
                 self.config[section][key] = realpath(join(dirname(config_path), self.config[section][key]))
@@ -62,11 +63,19 @@ class QualityEvaluator:
         :param image: loaded image as numpy array
         :return:
             float: global image score in interval <0, 1>
-            np.ndarray: heatmap drawn on input image if visual_heatmap is True, otherwise with each pixel having
-                value <0, 1> for score
+            np.ndarray: heatmap with each pixel having value <0, 1> for score
         """
 
         h, w = image.shape[:2]
         page_layout = PageLayout(id="ID", page_size=(h, w))
 
-        return self._evaluate_image_with_layout(image, page_layout)
+        img_score, heatmap_scores = self._evaluate_image_with_layout(image, page_layout)
+
+        # map scores to crops
+        heatmap = np.zeros((h, w), dtype=np.float)
+
+        for crop, score in heatmap_scores.items():
+            l, t, r, b = crop
+            heatmap[t:b + 1, l:r + 1] = score
+
+        return img_score, heatmap

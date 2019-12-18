@@ -8,9 +8,6 @@ from os import listdir
 from os.path import isdir, isfile, join, dirname, realpath, basename
 from sys import path, stderr
 
-dir_path = realpath(dirname(__file__))
-path.append(join(dir_path, "pero"))
-
 from heatmap import confidence_to_rgb
 from quality_evaluator import QualityEvaluator
 

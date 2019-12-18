@@ -7,16 +7,21 @@ import sys
 
 from argparse import ArgumentParser, Namespace
 from os import listdir
-from os.path import isdir
+from os.path import isdir, dirname, realpath, join
 from os import mkdir
 from scipy.special import softmax
+from sys import path
 from typing import List, Tuple, Dict, Optional, Iterable
 from xml.etree import ElementTree
 
+# TODO: remove when pero-ocr becomes downloadable package
+dir_path = realpath(dirname(dirname(__file__)))
+path.append(join(dir_path, "pero"))
+
 from pero.document_ocr import PageLayout
-from src.force_alignment import force_align
-from src.aligningDataset import narrow_label
-from src.show_transcriptions import greedy_filtration
+from pero.force_alignment import force_align
+from pero.ocr_engine.postprocess import narrow_label
+from pero.char_confidences import greedy_filtration
 
 
 class Coords:

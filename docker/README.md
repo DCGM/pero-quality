@@ -4,7 +4,7 @@ This directory contains basic info about how to run this repository in docker. D
 
 ## Prerequisites
 
-- [docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-engine---community-](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-engine---community-)
+- [docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-engine---community-)
 
 - [nvidia docker](https://github.com/NVIDIA/nvidia-docker) support
 

@@ -5,8 +5,8 @@ import numpy as np
 
 from argparse import ArgumentParser, Namespace
 from os import listdir
-from os.path import isdir, isfile, join, dirname, realpath, basename
-from sys import path, stderr
+from os.path import isdir, isfile, join, basename
+from sys import stderr
 
 from heatmap import confidence_to_rgb
 from quality_evaluator import QualityEvaluator

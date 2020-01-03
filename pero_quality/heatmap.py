@@ -242,7 +242,14 @@ def compute_global_score(scores: List) -> float:
     return np.average(scores)
 
 
-def compute_local_score(heatmap: Iterable, denom=5):
+def compute_local_score(heatmap: Iterable, denom=5, power=6):
+    """
+
+    :param heatmap: confidence values for every character in given crop
+    :param denom: fraction of confidence values used for score computation
+    :param power: parameter of local score computation
+    :return: score for local heatmap
+    """
     values = np.array(sorted(heatmap))
 
     if len(values) == 0:
@@ -250,11 +257,11 @@ def compute_local_score(heatmap: Iterable, denom=5):
 
     values = values[:len(values)//denom]
 
-    p = 6
+    p = power
     return ((values ** p).sum()) ** (1/p)
 
 
-def compute_heatmap(heatmap: Dict, img_size: Tuple, crop_size=200, min_logit_per_crop=5) \
+def compute_heatmap(heatmap: Dict, img_size: Tuple, crop_size=200, min_logit_per_crop=5, denom=5, power=6) \
         -> Tuple[float, Dict[Tuple, float]]:
     """
     Compute perceptual score from OCR confidences of each letter detection.
@@ -263,6 +270,8 @@ def compute_heatmap(heatmap: Dict, img_size: Tuple, crop_size=200, min_logit_per
     :param img_size: (h, w) format
     :param crop_size: size of each crop which will be evaluated
     :param min_logit_per_crop: if crop contains less logits than given value, the crop is not evaluated
+    :param denom: parameter of local score computation
+    :param power: parameter of local score computation
     :return:
         float: score of whole image
         Dict[(l, t, r, b) -> float]: score of every crop
@@ -277,8 +286,8 @@ def compute_heatmap(heatmap: Dict, img_size: Tuple, crop_size=200, min_logit_per
     crop_scores: Dict[Tuple, float] = {}
 
     for y in range(0, h - (h % crop_size) + crop_size, crop_size):
-        for x in range(0, w - (w % crop_size + crop_size), crop_size):
-            crops.append(Coords(x, y, x + crop_size - 1, y + crop_size - 1))
+        for x in range(0, w - (w % crop_size) + crop_size, crop_size):
+            crops.append(Coords(x, y, min(x + crop_size - 1, w - 1), min(y + crop_size - 1, h - 1)))
 
     for crop in crops:
         # filter heatmap to contain only scores from given crop
@@ -287,7 +296,7 @@ def compute_heatmap(heatmap: Dict, img_size: Tuple, crop_size=200, min_logit_per
         if len(submap) < min_logit_per_crop:
             continue
 
-        score = np.clip(compute_local_score(submap.values()), 0, 1)
+        score = np.clip(compute_local_score(submap.values(), denom, power), 0, 1)
         crop_scores[crop.tuple()] = score
 
     global_score = np.clip(compute_global_score(list(crop_scores.values())), 0, 1)

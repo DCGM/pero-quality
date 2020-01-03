@@ -7,7 +7,7 @@ import os
 from configparser import ConfigParser
 from os.path import isfile, isabs, dirname, join, realpath
 from sys import stderr
-from typing import Dict
+from typing import Dict, Optional
 
 
 try:
@@ -40,7 +40,14 @@ class QualityEvaluator:
         self.page_parser = PageParser(self.config)
         self.encoding = load_encoding(self.config['OCR']['OCR_JSON'])
 
-    def _evaluate_image_with_layout(self, image: np.ndarray, page_layout: PageLayout) \
+        # minimal logit count in crop for evaluation
+        self.min_logit_per_crop = self.config.getint('QUALITY', 'MIN_LOGIT_PER_CROP')
+
+        # score computation parameters
+        self.denom = self.config.getint('QUALITY', 'DENOMINATOR')
+        self.power = self.config.getint('QUALITY', 'POWER')
+
+    def _evaluate_image_with_layout(self, image: np.ndarray, page_layout: Optional[PageLayout] = None) \
             -> (float, Dict, PageLayout):
         """
         :param image: loaded image as numpy array
@@ -49,10 +56,13 @@ class QualityEvaluator:
             float: global image score
             Dict[(l, t, r, b) -> float]: dictionary containing score for each evaluated crop with its coordinates
         """
+
         page_layout = self.page_parser.process_page(image, page_layout)
         confidences_dict = locate_confidences(page_layout, self.encoding)
 
-        img_score, heatmaps_scores = compute_heatmap(confidences_dict, image.shape[:2])
+        img_score, heatmaps_scores = compute_heatmap(confidences_dict, image.shape[:2],
+                                                     min_logit_per_crop=self.min_logit_per_crop, denom=self.denom,
+                                                     power=self.power)
 
         return img_score, heatmaps_scores
 

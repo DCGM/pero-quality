@@ -1,6 +1,6 @@
 # pero-quality
 
-This repository contains scripts used for digitalized document quality  assessment. The main goal is to produce a heatmap with quality score, which is similar to human perception. The module computes local scores based on probability scores extracted from character recognition. More detailed description is located below.
+This repository contains scripts used for digitalized document quality  assessment. The main goal is to produce a heatmap containing quality score, which is similar to human perception. Other product of quality estimation is a score for the whole page. The module computes local scores based on probability scores extracted from character recognition. More detailed description is located below.
 
 ![](images/image0.jpg) ![](images/image2.jpg)
 
@@ -46,9 +46,9 @@ Both input path and output path both must be directory paths or file paths. Addi
 
 ## Models
 
-| The model is train on dataset created from [Lidove noviny](http://www.digitalniknihovna.cz/mzk/periodical/uuid:bdc405b0-e5f9-11dc-bfb2-000d606f5dc6). Text is written in czech language and scanned using microfilm scanner to approx. 6000x4000 pixels. | [Lidove noviny__2019-12-16](http://www.fit.vutbr.cz/~ihradis/pero-models/ocr_quality_LN_2019-12-16.zip) |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| more will be added                                                                                                                                                                                                                                       |                                                                                                         |
+| The model is train on dataset created from [Lidove noviny](http://www.digitalniknihovna.cz/mzk/periodical/uuid:bdc405b0-e5f9-11dc-bfb2-000d606f5dc6). Text is written in czech language and scanned using microfilm scanner to approx. 6000x4000 pixels. | [Lidove noviny_2019-12-16](http://www.fit.vutbr.cz/~ihradis/pero-models/ocr_quality_LN_2019-12-16.zip) |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| more will be added                                                                                                                                                                                                                                       |                                                                                                        |
 
 ## Docker support
 

@@ -4,7 +4,7 @@ This repository provides tools for quality assessment of digitalized documents .
 
 ![](images/image0.jpg) ![](images/image2.jpg)
 
-This module is build on top of OCR developed in project [PERO]([https://pero.fit.vutbr.cz/](https://pero.fit.vutbr.cz/) ([pero-ocr]([https://github.com/DCGM/pero-ocr](https://github.com/DCGM/pero-ocr)). The text recognition works in multiple stages. Firstly, locations and heights of text lines are determined using a fully convolutional neural network (modified U-NET).  The individual text lines are processed by covolutional-recurrent networks trained using CTC loss. These networks provide confidences of recognized characters which are locally mapped to perceptual scores. The mapping to perceptual scores was calibrated on a large dataset of readability ratings by human readers. 
+This module is build on top of OCR developed in project [PERO](https://pero.fit.vutbr.cz/) ([pero-ocr](https://github.com/DCGM/pero-ocr)). The text recognition works in multiple stages. Firstly, locations and heights of text lines are determined using a fully convolutional neural network (modified U-NET).  The individual text lines are processed by covolutional-recurrent networks trained using CTC loss. These networks provide confidences of recognized characters which are locally mapped to perceptual scores. The mapping to perceptual scores was calibrated on a large dataset of readability ratings by human readers. 
 
 ## Install
 

@@ -72,6 +72,16 @@ def get_args() -> Namespace:
     return args
 
 
+def divide_chunks(l, n):
+    """
+    divide list into chunks
+    :param l: list
+    :return: number of chunks
+    """
+    for i in range(0, len(l), n): 
+        yield l[i:i + n] 
+
+
 def load_encoding(path: str) -> List[str]:
     """
     Load character table from OCR engine configuration

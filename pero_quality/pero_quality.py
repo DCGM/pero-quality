@@ -10,12 +10,14 @@ from sys import stderr
 
 from heatmap import confidence_to_rgb
 from quality_evaluator import QualityEvaluator
+from quality_evaluator_regression import QualityEvaluatorRegression
 
 
 def get_args() -> Namespace:
     parser = ArgumentParser()
     parser.add_argument("config", help="Path to OCR configuration file.")
     parser.add_argument("input", help="Path to image or folder.")
+    parser.add_argument("-m", "--mode", choices=["ocr", "regression"], default="ocr")
     parser.add_argument("-o", "--output", help="Path to image or folder.")
     parser.add_argument("-v", "--visual-heatmap", help="Colored heatmap created.", action="store_true")
 
@@ -74,7 +76,13 @@ def main():
     else:
         raise FileNotFoundError("Input file not found.")
 
-    evaluator = QualityEvaluator(args.config)
+    if args.mode == "ocr":
+        evaluator = QualityEvaluator(args.config)
+    elif args.mode == "regress":
+        evaluator = QualityEvaluatorRegression(args.config)
+    else:
+        raise NameError("Wrong mode given.")
+
     colour_lut = create_colour_lut()
 
     for file in files:

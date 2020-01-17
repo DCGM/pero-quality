@@ -32,6 +32,10 @@ class QualityEvaluatorRegression:
         self.config.optionxform = str
         self.config.read(config_path)
 
+        for section, key in [['REGRESSION', 'SEGMENTATION'], ['PATH', 'PATH']]:
+            if not isabs(self.config[section][key]):
+                self.config[section][key] = realpath(join(dirname(config_path), self.config[section][key]))
+
         #regression model
         f = gfile.FastGFile(self.config['REGRESSION']['PATH'], 'rb')
         graph_reg = tf.GraphDef()

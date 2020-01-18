@@ -142,13 +142,13 @@ class QualityEvaluatorRegression:
         test_img_canvas[0, :resized.shape[0], :resized.shape[1], :] = resized/256.
 
         self.sess_seg.graph.as_default()
-        out_map = self.sess_seg.run('inderence:0', feed_dict={'inference_input:0': test_img_canvas})
+        out_map = self.sess_seg.run(self.config['REGRESSION']['OUTPUT'], feed_dict={self.config['REGRESSION']['INPUT']: test_img_canvas})
         out_map = cv2.resize(cv2.cvtColor(out_map[0], cv2.COLOR_BGR2GRAY), (np.shape(image)[1], np.shape(image)[0]))
 
         batch, shape, skip = self._parse_image(image, out_map)
 
         self.sess_reg.graph.as_default()
-        batches = list(divide_chunks(batch, 32))
+        batches = list(divide_chunks(batch, int(self.config['REGRESSION']['BATCH_SIZE'])))
 
         output = self.sess_reg.graph.get_tensor_by_name(self.config['REGRESSION']['OUTPUT'])
         preds = []

@@ -32,9 +32,9 @@ class QualityEvaluatorRegression:
         self.config.optionxform = str
         self.config.read(config_path)
 
-        for section, key in [['REGRESSION', 'SEGMENTATION'], ['PATH', 'PATH']]:
-            if not isabs(self.config[section][key]):
-                self.config[section][key] = realpath(join(dirname(config_path), self.config[section][key]))
+        for section in ['REGRESSION', 'SEGMENTATION']:
+            if not isabs(self.config[section]['PATH']):
+                self.config[section]['PATH'] = realpath(join(dirname(config_path), self.config[section]['PATH']))
 
         #regression model
         f = gfile.FastGFile(self.config['REGRESSION']['PATH'], 'rb')
@@ -117,7 +117,7 @@ class QualityEvaluatorRegression:
         for y in range(np.shape(matrix)[0]):
             for x in range(np.shape(matrix)[1]):
                 if not skip_matrix[y][x]:
-                    heatmap[x*self.size:x*self.size+self.size, y*self.size:y*self.size+self.size] = matrix[y][x]
+                    heatmap[y*self.size:y*self.size+self.size, x*self.size:x*self.size+self.size] = matrix[y][x]
 
         return heatmap
 
@@ -142,7 +142,7 @@ class QualityEvaluatorRegression:
         test_img_canvas[0, :resized.shape[0], :resized.shape[1], :] = resized/256.
 
         self.sess_seg.graph.as_default()
-        out_map = self.sess_seg.run(self.config['REGRESSION']['OUTPUT'], feed_dict={self.config['REGRESSION']['INPUT']: test_img_canvas})
+        out_map = self.sess_seg.run(self.config['SEGMENTATION']['OUTPUT'], feed_dict={self.config['SEGMENTATION']['INPUT']: test_img_canvas})
         out_map = cv2.resize(cv2.cvtColor(out_map[0], cv2.COLOR_BGR2GRAY), (np.shape(image)[1], np.shape(image)[0]))
 
         batch, shape, skip = self._parse_image(image, out_map)

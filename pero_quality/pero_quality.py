@@ -78,7 +78,7 @@ def main():
 
     if args.mode == "ocr":
         evaluator = QualityEvaluator(args.config)
-    elif args.mode == "regress":
+    elif args.mode == "regression":
         evaluator = QualityEvaluatorRegression(args.config)
     else:
         raise NameError("Wrong mode given.")

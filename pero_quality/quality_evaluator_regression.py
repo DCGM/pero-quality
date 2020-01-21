@@ -37,24 +37,24 @@ class QualityEvaluatorRegression:
                 self.config[section]['PATH'] = realpath(join(dirname(config_path), self.config[section]['PATH']))
 
         #regression model
-        f = gfile.FastGFile(self.config['REGRESSION']['PATH'], 'rb')
-        graph_reg = tf.GraphDef()
-        graph_reg.ParseFromString(f.read())
-        f.close()
+        with tf.gfile.GFile(self.config['REGRESSION']['PATH'], "rb") as f:
+            graph_def = tf.GraphDef()
+            graph_def.ParseFromString(f.read())
 
-        self.sess_reg = tf.Session()
-        self.sess_reg.graph.as_default()
-        tf.import_graph_def(graph_reg)
+        with tf.Graph().as_default() as graph:
+            tf.import_graph_def(graph_def)
 
-        self.size = int(self.config['REGRESSION']['SIZE'])
+        self.sess_reg = tf.Session(graph=graph)
 
-        #segmentation model
-        saver = tf.train.import_meta_graph(self.config['SEGMENTATION']['PATH'] + '.meta')
-        
-        tf_config = tf.ConfigProto()
-        tf_config.gpu_options.allow_growth = True
-        self.sess_seg = tf.Session(config=tf_config)
-        saver.restore(self.sess_seg, self.config['SEGMENTATION']['PATH'])
+        #segmentation model        
+        with tf.gfile.GFile(self.config['SEGMENTATION']['PATH'], "rb") as f:
+            graph_def = tf.GraphDef()
+            graph_def.ParseFromString(f.read())
+
+        with tf.Graph().as_default() as graph:
+            tf.import_graph_def(graph_def)
+
+        self.sess_seg = tf.Session(graph=graph)
 
     def _parse_image(self, image, out_map):
         """

@@ -7,4 +7,5 @@ RUN git clone https://github.com/DCGM/pero-quality.git
 RUN pip3 install --upgrade pip && \
     pip3 install --no-cache-dir -r pero-quality/requirements.txt
 
+WORKDIR pero-quality
 

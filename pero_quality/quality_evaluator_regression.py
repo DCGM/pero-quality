@@ -36,6 +36,8 @@ class QualityEvaluatorRegression:
             if not isabs(self.config[section]['PATH']):
                 self.config[section]['PATH'] = realpath(join(dirname(config_path), self.config[section]['PATH']))
 
+        self.size = int(self.config['REGRESSION']['SIZE'])
+
         #regression model
         with tf.gfile.GFile(self.config['REGRESSION']['PATH'], "rb") as f:
             graph_def = tf.GraphDef()

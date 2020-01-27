@@ -22,15 +22,11 @@ class QualityEvaluatorRegression:
     """
     Class which computes image quality and outputs a heatmap.
     """
-    def __init__(self, config_path):
+    def __init__(self, config_path, config):
         # suppress tensorflow warnings on loading models
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-        assert isfile(config_path), f"Config file not found. Given path: \"{config_path}\""
-
-        self.config = ConfigParser()
-        self.config.optionxform = str
-        self.config.read(config_path)
+        self.config = config
 
         for section in ['REGRESSION', 'SEGMENTATION']:
             if not isabs(self.config[section]['PATH']):

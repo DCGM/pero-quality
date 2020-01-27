@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 
 from argparse import ArgumentParser, Namespace
+from configparser import ConfigParser
 from os import listdir
 from os.path import isdir, isfile, join, basename
 from sys import stderr
@@ -17,13 +18,13 @@ def get_args() -> Namespace:
     parser = ArgumentParser()
     parser.add_argument("config", help="Path to OCR configuration file.")
     parser.add_argument("input", help="Path to image or folder.")
-    parser.add_argument("-m", "--mode", choices=["ocr", "regression"], default="ocr")
+    parser.add_argument("-m", "--mode", choices=["ocr", "regression"])
     parser.add_argument("-o", "--output", help="Path to image or folder.")
     parser.add_argument("-v", "--visual-heatmap", help="Colored heatmap created.", action="store_true")
 
     args = parser.parse_args()
 
-    assert isdir(args.input) == isdir(args.output), "Both paths must be a file or a directory."
+    assert args.output is None or isdir(args.input) == isdir(args.output), "Both paths must be a file or a directory."
     return args
 
 
@@ -76,10 +77,16 @@ def main():
     else:
         raise FileNotFoundError("Input file not found.")
 
-    if args.mode == "ocr":
-        evaluator = QualityEvaluator(args.config)
-    elif args.mode == "regression":
-        evaluator = QualityEvaluatorRegression(args.config)
+    assert isfile(args.config), f"Config file not found. Given path: \"{args.config}\""
+
+    config = ConfigParser()
+    config.optionxform = str
+    config.read(args.config)
+
+    if config["QUALITY"]["MODE"].lower() == "ocr":
+        evaluator = QualityEvaluator(args.config, config)
+    elif config["QUALITY"]["MODE"].lower() == "regression":
+        evaluator = QualityEvaluatorRegression(args.config, config)
     else:
         raise NameError("Wrong mode given.")
 

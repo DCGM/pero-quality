@@ -11,7 +11,7 @@ This module is build on top of OCR developed in project [PERO](https://pero.fit.
 This module requires python 3. Using virtualenv is highly recommended.
 
 ```bash
-git clone https://github.com/DCGM/pero-quality.git
+git clone --recursive https://github.com/DCGM/pero-quality.git
 cd pero-quality
 pip install -r requirements.txt
 ```

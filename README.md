@@ -1,6 +1,6 @@
 # pero-quality
 
-This repository provides tools for quality assessment of digitalized documents . The estimated quality scores closely correnspond to readability by humans. The tools provide quality score heatmaps and an overall quality score for a whole document page. The module computes local perceptual qulity scores based on confidenc scores  from Optical Character Recognition (OCR). More detailed description is provided below.
+This repository provides tools for quality assessment of digitalized documents . The estimated quality scores closely correnspond to readability by humans. The tools provide quality score heatmaps and an overall quality score for a whole document page. The module computes local perceptual quality scores based on confidence scores  from Optical Character Recognition (OCR). More detailed description is provided below.
 
 ![](images/image0.jpg) ![](images/image2.jpg)
 
@@ -8,7 +8,7 @@ This module is build on top of OCR developed in project [PERO](https://pero.fit.
 
 ## Install
 
-This module requires python 3.
+This module requires python 3. Using virtualenv is highly recommended.
 
 ```bash
 git clone https://github.com/DCGM/pero-quality.git
@@ -50,9 +50,10 @@ Both input path and output path can be directories, in which case all images in 
 
 ## Models
 
-| [Lidove noviny_2019-12-16](http://www.fit.vutbr.cz/~ihradis/pero-models/ocr_quality_LN_2019-12-16.zip) | This model is optimized for low-quality scans of  czech newspapers scanned from microfilms. E.g.  [Lidove noviny](http://www.digitalniknihovna.cz/mzk/periodical/uuid:bdc405b0-e5f9-11dc-bfb2-000d606f5dc6). |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| more will be added                                                                                     |                                                                                                                                                                                                              |
+| [Lidove noviny_2019-12-16](http://www.fit.vutbr.cz/~ihradis/pero-models/ocr_quality_LN_2019-12-16.zip)   | This model is optimized for low-quality scans of  czech newspapers scanned from microfilms. E.g.  [Lidove noviny](http://www.digitalniknihovna.cz/mzk/periodical/uuid:bdc405b0-e5f9-11dc-bfb2-000d606f5dc6).       |
+| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [Lidove noviny regression 2020-21-1](www.fit.vutbr.cz/~ihradis/pero-models/regression_model_LN_27.1.zip) | Simplified faster model trained on low-quality scans of czech newspapers scanned from microfilms. E.g.  [Lidove noviny](http://www.digitalniknihovna.cz/mzk/periodical/uuid:bdc405b0-e5f9-11dc-bfb2-000d606f5dc6). |
+| more will be added                                                                                       |                                                                                                                                                                                                                    |
 
 ## Docker support
 

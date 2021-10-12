@@ -28,7 +28,7 @@ networkx==2.4
 numba==0.47.0
 numpy==1.18.0
 oauthlib==3.1.0
-opencv-python==4.1.2.30
+opencv-python==4.2.0.32
 opt-einsum==3.1.0
 packaging==20.0
 Pillow==7.0.0

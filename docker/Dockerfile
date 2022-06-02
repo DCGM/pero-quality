@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.15.0-gpu-py3
+FROM docker.io/tensorflow/tensorflow:1.15.0-gpu-py3
 
 RUN apt-get update && apt-get install -y --no-install-recommends git libsm6 libxext6 libxrender-dev
 

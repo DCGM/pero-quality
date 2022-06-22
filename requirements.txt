@@ -26,7 +26,7 @@ matplotlib==3.1.2
 more-itertools==8.0.2
 networkx==2.4
 numba==0.47.0
-numpy==1.18.0
+numpy==1.22.0
 oauthlib==3.1.0
 opencv-python==4.1.2.30
 opt-einsum==3.1.0
